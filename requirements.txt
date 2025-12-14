@@ -1,0 +1,30 @@
+# Core dependencies
+torch
+pytorch-lightning
+hydra-core
+omegaconf
+
+# PTLS library for CoLES
+pytorch-lifestream
+
+# Data processing
+pandas
+numpy
+pyarrow
+pyyaml
+
+# Visualization
+matplotlib
+seaborn
+
+# Jupyter
+jupyter
+ipykernel
+notebook
+
+# Metrics and evaluation
+scikit-learn
+scipy
+
+# Utilities
+tqdm

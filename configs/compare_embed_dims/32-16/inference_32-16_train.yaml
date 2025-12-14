@@ -1,0 +1,54 @@
+# configs/inference.yaml
+
+seed: 42
+device: cuda:1
+
+data:
+  categorical_features:
+    - small_group
+    - trans_date
+  numeric_features:
+    - amount_rur
+    - event_time
+
+# Test data configuration
+test_data:
+  txn_pickle_path: data/data_age_pred/train_trx.p
+  batch_size: 128
+  num_workers: 4
+
+# Model configuration (same as training)
+model:
+  _target_: ptls.frames.coles.CoLESModule
+  seq_encoder: 
+    _target_: ptls.nn.RnnSeqEncoder
+    hidden_size: 128
+    type: 'gru'
+    bidir: False
+    trx_encoder:
+      _target_: ptls.nn.TrxEncoder
+      embeddings:
+        small_group:
+          in: 100
+          out: 32
+        trans_date:
+          in: 400
+          out: 16
+      numeric_values:
+        amount_rur: 'log'
+      embeddings_noise: 0.001
+  loss: 
+    _target_: ptls.frames.coles.losses.ContrastiveLoss
+    margin: 0.5
+    sampling_strategy: 
+      _target_: ptls.frames.coles.sampling_strategies.HardNegativePairSelector
+      neg_count: 5
+
+# Output configuration
+output:
+  results_path: 'results'
+  exp_name: 'compare-embed-dims'
+  run_name: '32-16'
+  embeddings_filename: 'train_embeds'
+
+checkpoint_path: ${output.results_path}/${output.exp_name}/${output.run_name}/checkpoints/19.pth

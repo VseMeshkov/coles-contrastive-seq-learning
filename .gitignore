@@ -1,0 +1,102 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# PyTorch / Model files
+*.pth
+*.pt
+*.ckpt
+*.pkl
+*.p
+*.pickle
+
+# Data files
+*.csv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+data/raw/
+data/processed/
+
+# Results and logs
+results/*/checkpoints/
+results/*/embeddings/
+results/*/*.pth
+*.log
+logs/
+wandb/
+.neptune/
+
+# Hydra
+outputs/
+multirun/
+.hydra/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Experiments artifacts
+*.png
+*.jpg
+*.jpeg
+*.pdf
+figures/
+
+# Compressed files
+*.zip
+*.tar.gz
+*.tar
+*.rar
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Cache
+.cache/
+.pytest_cache/
+
+# Keep empty directories
+!.gitkeep

@@ -1,0 +1,32 @@
+# configs/evaluate.yaml
+
+seed: 42
+device: cuda
+
+# Data configuration
+data:
+  train_embeddings_path: results/simple_example/simple_example_v1/inference_results/train_embeds.parquet
+  test_embeddings_path: results/simple_example/simple_example_v1/inference_results/test_embeds.parquet
+  val_size: 0.1  # Split 10% of train for validation
+
+# Model configuration
+model:
+  _target_: nets.MLPClassifier
+  hidden_size: 512
+  input_size: 256
+  num_classes: 4
+
+# Training configuration
+training:
+  num_epochs: 100
+  batch_size: 512
+  num_workers: 4
+  early_stopping: 20  # Stop if no improvement for 10 epochs
+  optimizer:
+    lr: 0.01
+
+# Output
+output:
+  results_path: 'results'
+  exp_name: 'simple_example'
+  run_name: 'simple_example_v1'

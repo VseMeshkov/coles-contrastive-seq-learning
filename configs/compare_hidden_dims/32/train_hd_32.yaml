@@ -1,0 +1,74 @@
+seed: 42
+device: cuda:1
+
+data:
+  categorical_features:
+    - small_group
+    - trans_date
+  numeric_features:
+    - amount_rur
+    - event_time
+
+# Train data configuration
+train_data:
+  txn_pickle_path: data/data_age_pred/train_trx.p
+  split_count: 5
+  cnt_min: 64
+  cnt_max: 256
+  batch_size: 32
+  num_workers: 4
+
+# Val data configuration
+val_data:
+  val_split: 0.2
+  split_count: 5
+  cnt_min: 64
+  cnt_max: 256
+  batch_size: 32
+  num_workers: 4
+
+# Test data configuration
+test_data:
+  txn_pickle_path: data/data_age_pred/test_trx.p
+  batch_size: 256
+  num_workers: 4
+  
+model:
+  _target_: ptls.frames.coles.CoLESModule
+  seq_encoder: 
+    _target_: ptls.nn.RnnSeqEncoder
+    hidden_size: 32
+    type: 'gru'
+    bidir: False
+    trx_encoder:
+      _target_: ptls.nn.TrxEncoder
+      embeddings:
+        small_group:
+          in: 100
+          out: 16
+        trans_date:
+          in: 400
+          out: 8
+      numeric_values:
+        amount_rur: 'log'
+      embeddings_noise: 0.001
+  loss: 
+    _target_: ptls.frames.coles.losses.ContrastiveLoss
+    margin: 0.5
+    sampling_strategy: 
+      _target_: ptls.frames.coles.sampling_strategies.HardNegativePairSelector
+      neg_count: 5
+
+training:
+  num_epochs: 100
+  grad_clip: 1.0
+  early_stopping: 10
+  optimizer:
+    _target_: torch.optim.Adam
+    lr: 0.003
+    _partial_: True
+    
+output:
+  results_path: 'results'
+  exp_name: 'compare_sizes'
+  run_name: 'hidden_dim=${model.seq_encoder.hidden_size}'
