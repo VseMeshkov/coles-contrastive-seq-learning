@@ -76,13 +76,6 @@ multirun/
 Thumbs.db
 .DS_Store
 
-# Experiments artifacts
-*.png
-*.jpg
-*.jpeg
-*.pdf
-figures/
-
 # Compressed files
 *.zip
 *.tar.gz
