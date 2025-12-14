@@ -6,15 +6,74 @@
 
 A comprehensive implementation and experimental analysis of **CoLES (Contrastive Learning for Event Sequences)** applied to age prediction from transaction sequences. This repository serves as both a practical guide and research exploration of self-supervised representation learning for temporal event data.
 
-## 📖 About CoLES
-
-CoLES is a self-supervised learning framework that learns meaningful representations from event sequences without requiring labeled data. It uses contrastive learning to create embeddings where similar sequences are close together and dissimilar sequences are far apart in the representation space.
-
 **Key Resources:**
 - 📄 [CoLES Paper (arXiv)](https://arxiv.org/abs/2002.08232) - Original research paper
 - 🔧 [PTLS Library](https://github.com/dllllb/pytorch-lifestream) - PyTorch implementation of CoLES and other sequence models
 - 📊 [Our Experiments Notebook](experiments.ipynb) - Detailed analysis and visualizations
 
+
+## 📖 About CoLES
+
+CoLES is a self-supervised learning framework that learns meaningful representations from event sequences without requiring labeled data. It uses contrastive learning to create embeddings where similar sequences are close together and dissimilar sequences are far apart in the representation space.
+
+### How CoLES Works
+
+#### 1. Slice Generation (Data Augmentation)
+
+CoLES generates training pairs through **temporal slicing** of event sequences:
+
+- **Original sequence**: A customer's complete transaction history (e.g., 100 events)
+- **Slice generation**: Multiple random subsequences are sampled from the same original sequence
+- **Positive pairs**: Different slices from the **same** customer form positive pairs (semantically similar)
+- **Negative pairs**: Slices from **different** customers form negative pairs (semantically dissimilar)
+
+<p align="center">
+  <img src="images/slice-algo.png" alt="Contrastive Learning" width="700"/>
+  <br>
+  <em>Random slices sub sequece generation algorithm from original CoLES paper</em>
+</p>
+
+**Example:**
+- Customer A: [A_txn1, A_txn2, A_txn3, A_txn4, A_txn5, A_txn6, A_txn7, A_txn8]
+- - Slice 1: [A_txn1, A_txn2, A_txn3, A_txn4] (positive for A)
+- - Slice 2: [A_txn3, A_txn4, A_txn5, A_txn6, A_txn7] (positive for A)
+------------------------------------------------------------------------
+- Customer B: [B_txn1, B_txn2, B_txn3, B_txn4, B_txn5] (negative for A)
+- - Slice 3: [B_txn2, B_txn3, B_txn4]
+------------------------------------------------------------------------
+
+
+
+#### 2.1 Contrastive Learning Process
+
+<p align="center">
+  <img src="images/contrastive_learning.png" alt="Contrastive Learning" width="700"/>
+  <br>
+  <em>Contrastive loss: similar sequences (positive pairs) are pulled together, dissimilar sequences (negative pairs) are pushed apart</em>
+</p>
+
+#### 2.2 Contrastive Loss Function
+
+The model is trained using a **pairwise margin-based contrastive loss**:
+
+<p align="center">
+  <img src="https://latex.codecogs.com/svg.image?\mathcal{L}_{uv}(M)=Y_{uv}\frac{1}{2}d_M(u,v)^2+(1-Y_{uv})\frac{1}{2}\max\{0,\rho-d_M(u,v)\}^2" alt="Contrastive Loss Formula"/>
+</p>
+
+Where:
+- **u, v**: Embeddings of two sequence slices
+- **d_M(u, v)**: Distance between embeddings in the learned metric space
+- **Y_uv**: Binary indicator (1 if positive pair, 0 if negative pair)
+- **ρ (rho)**: Margin parameter (minimum distance for negative pairs)
+
+**Intuition:**
+- **Positive pairs** (Y_uv = 1): Minimize distance d_M(u, v)² → pull together
+- **Negative pairs** (Y_uv = 0): Only penalize if distance < margin ρ → push apart with margin
+
+This loss ensures:
+- Similar sequences (from same customer) are embedded close together
+- Dissimilar sequences (from different customers) are separated by at least margin ρ
+- Model learns discriminative representations for downstream tasks
 ### Why CoLES?
 
 Traditional supervised learning on sequential data faces challenges:
