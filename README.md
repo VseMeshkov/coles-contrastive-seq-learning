@@ -128,13 +128,6 @@ Each customer sequence consists of multiple transaction events with the followin
   - Available only for supervised fine-tuning phase
   - Not used during contrastive pre-training
 
-### Dataset Statistics
-- **Number of customers**: ~9,400
-- **Average sequence length**: Varies per customer
-- **Transaction features**: 3 main features (2 categorical + 1 numerical)
-- **Class distribution**: Multiple age categories (balanced/imbalanced - depending on your data)
-
-
 ## 🛠️ Key Implementation Details
 
 ### Two-Stage Pipeline
